@@ -8,10 +8,9 @@ import {
 } from "react-router";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 
-import type { Route } from "./+types/root";
 import "./app.css";
 
-export const links: Route.LinksFunction = () => [
+export const links = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
     rel: "preconnect",
@@ -26,25 +25,25 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <MantineProvider
-      theme={{ primaryColor: "grape", fontFamily: "Inter, sans-serif" }}
-      defaultColorScheme="auto"
-    >
-      <html lang="en">
-        <head>
-          <ColorSchemeScript />
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <Meta />
-          <Links />
-        </head>
-        <body>
+    <html lang="en">
+      <head>
+        <ColorSchemeScript />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <MantineProvider
+          theme={{ primaryColor: "grape", fontFamily: "Inter, sans-serif" }}
+          defaultColorScheme="auto"
+        >
           {children}
-          <ScrollRestoration />
-          <Scripts />
-        </body>
-      </html>
-    </MantineProvider>
+        </MantineProvider>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   );
 }
 
@@ -52,7 +51,7 @@ export default function App() {
   return <Outlet />;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export function ErrorBoundary({ error }: { error: any }) {
   let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
@@ -63,7 +62,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       error.status === 404
         ? "The requested page could not be found."
         : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
+  } else if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development' && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }
